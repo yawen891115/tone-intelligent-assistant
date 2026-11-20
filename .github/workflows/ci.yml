@@ -37,3 +37,20 @@ jobs:
       - run: npm ci
       - name: Type-check (strict) and build the RagChat component
         run: npm run build
+
+  integrated-frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tone-front
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install the locked T-One dependencies
+        run: npx --yes --registry=https://registry.npmjs.org pnpm@8.15.9 install --frozen-lockfile --registry=https://registry.npmjs.org
+      - name: Build the integrated help assistant
+        run: npm run build
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider --max-old-space-size=6144
