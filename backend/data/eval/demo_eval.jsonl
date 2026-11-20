@@ -1,0 +1,66 @@
+{"qid": "q001", "question": "T-One 开源版的前端和后端项目分别叫什么", "relevant_doc_ids": ["tone/overview"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q002", "question": "这个测试平台主要能帮我做哪些事情", "relevant_doc_ids": ["tone/overview"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q003", "question": "添加机器后生成的 TSN 是什么", "relevant_doc_ids": ["tone/machine-access", "tone/toneagent"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q004", "question": "我想把实验室自己的服务器拿来跑测试，要怎么接入", "relevant_doc_ids": ["tone/machine-access"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q005", "question": "toneagent 的日志用什么命令查看", "relevant_doc_ids": ["tone/toneagent"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q006", "question": "平台上的机器一直连不上，显示离线怎么办", "relevant_doc_ids": ["tone/toneagent"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q007", "question": "Workspace 里测试人员和普通成员的权限有什么区别", "relevant_doc_ids": ["tone/workspace"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q008", "question": "别人建的团队空间我怎么加进去", "relevant_doc_ids": ["tone/workspace"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q009", "question": "Test Conf 和测试套件是什么关系", "relevant_doc_ids": ["tone/test-suite"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q010", "question": "为什么新建测试的时候找不到系统里已有的那套用例", "relevant_doc_ids": ["tone/test-suite"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q011", "question": "创建 Job 时按标签调度机器是怎么选的", "relevant_doc_ids": ["tone/create-job", "tone/machine-tags"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q012", "question": "提交一个测试任务之后它会经历哪些状态", "relevant_doc_ids": ["tone/create-job"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q013", "question": "测试计划的 cron 表达式怎么写成每天凌晨执行", "relevant_doc_ids": ["tone/job-template"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q014", "question": "想让测试每天晚上自动跑一遍，不用手动点", "relevant_doc_ids": ["tone/job-template"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q015", "question": "环境准备里安装内核需要填 kernel devel headers 哪些包", "relevant_doc_ids": ["tone/kernel-install"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q016", "question": "测试前想先换成我编译的新内核，平台能自动做吗", "relevant_doc_ids": ["tone/kernel-install"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q017", "question": "失败用例可以标注哪些失败原因", "relevant_doc_ids": ["tone/test-result"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q018", "question": "测试跑完以后怎么把数据导出成表格", "relevant_doc_ids": ["tone/test-result"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q019", "question": "性能基线里的 CV 是什么意思", "relevant_doc_ids": ["tone/baseline"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q020", "question": "怎么让平台自动识别以前就知道的失败，不要每次都报出来", "relevant_doc_ids": ["tone/baseline", "tone/test-result"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q021", "question": "对比分析里的基准组和对比组怎么选", "relevant_doc_ids": ["tone/compare-analysis"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q022", "question": "新旧两个内核版本的性能数据想放在一起比较一下", "relevant_doc_ids": ["tone/compare-analysis"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q023", "question": "报告模板在哪里维护", "relevant_doc_ids": ["tone/report"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q024", "question": "测试做完了想写份总结给领导看，平台上能直接生成吗", "relevant_doc_ids": ["tone/report"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q025", "question": "弹性机器池需要配置 AccessKey 吗", "relevant_doc_ids": ["tone/cloud-machines"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q026", "question": "没有自己的物理机，能不能临时用云服务器跑测试", "relevant_doc_ids": ["tone/cloud-machines"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q027", "question": "机器状态 Occupied 和 Broken 分别表示什么", "relevant_doc_ids": ["tone/machine-tags"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q028", "question": "提交的测试一直在排队不开始是怎么回事", "relevant_doc_ids": ["tone/machine-tags"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q029", "question": "自助排查需要输入什么", "relevant_doc_ids": ["tone/job-troubleshoot"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q030", "question": "测试任务失败了应该从哪里开始查原因", "relevant_doc_ids": ["tone/job-troubleshoot"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q031", "question": "离线上传页面需要上传什么格式的文件", "relevant_doc_ids": ["tone/offline-upload"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q032", "question": "机器所在的网络连不上平台，测试结果还能放到平台上分析吗", "relevant_doc_ids": ["tone/offline-upload", "tone-cli/result-format"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q033", "question": "钉钉机器人的 Token 填在哪里", "relevant_doc_ids": ["tone/notification"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q034", "question": "测试只有失败的时候才通知我，可以设置吗", "relevant_doc_ids": ["tone/notification"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q035", "question": "通过 API 调用平台需要什么访问令牌", "relevant_doc_ids": ["tone/permission"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q036", "question": "在 CI 里自动触发测试，需要怎么做身份认证", "relevant_doc_ids": ["tone/permission"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q037", "question": "tone-deploy 的 start.sh 脚本怎么执行", "relevant_doc_ids": ["deploy/deploy-docker"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q038", "question": "想在公司内网自己搭一套这个测试平台需要准备什么", "relevant_doc_ids": ["deploy/deploy-docker"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q039", "question": "部署时端口被占用用 ss -lntp 怎么查", "relevant_doc_ids": ["deploy/faq-deploy"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q040", "question": "装好以后打开网页是一片空白怎么回事", "relevant_doc_ids": ["deploy/faq-deploy"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q041", "question": "tone fetch 和 tone install 有什么区别", "relevant_doc_ids": ["tone-cli/usage"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q042", "question": "命令行工具怎么看支持哪些测试", "relevant_doc_ids": ["tone-cli/usage"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q043", "question": "install.sh 里的 GIT_URL 是做什么用的", "relevant_doc_ids": ["tone-cli/add-suite"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q044", "question": "我想把自己写的测试程序接入命令行工具，要准备哪些脚本", "relevant_doc_ids": ["tone-cli/add-suite"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q045", "question": "性能测试结果 throughput: 1234.5 这种格式是什么意思", "relevant_doc_ids": ["tone-cli/result-format"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q046", "question": "命令行跑完的结果保存在什么地方", "relevant_doc_ids": ["tone-cli/result-format"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q047", "question": "Anolis OS 8 和 CentOS 8 兼容吗", "relevant_doc_ids": ["anolis/anolis-os-intro"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q048", "question": "龙蜥操作系统支持 ARM 服务器吗", "relevant_doc_ids": ["anolis/anolis-os-intro"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q049", "question": "安装 Anolis OS 时怎么分区", "relevant_doc_ids": ["anolis/install"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q050", "question": "怎么做一个启动盘把系统装到新电脑上", "relevant_doc_ids": ["anolis/install"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q051", "question": "/etc/yum.repos.d 下的 baseurl 怎么改", "relevant_doc_ids": ["anolis/yum-repo"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q052", "question": "装软件下载特别慢，能换个更快的源吗", "relevant_doc_ids": ["anolis/yum-repo"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q053", "question": "centos2anolis.py 迁移前要做哪些准备", "relevant_doc_ids": ["anolis/centos-migration"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q054", "question": "老系统停止维护了，能不能不重装直接换成龙蜥", "relevant_doc_ids": ["anolis/centos-migration"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q055", "question": "grubby 怎么设置默认启动的内核", "relevant_doc_ids": ["anolis/anck"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q056", "question": "龙蜥默认用的是什么内核，有什么特别的", "relevant_doc_ids": ["anolis/anck"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q057", "question": "crashkernel 参数应该怎么设置", "relevant_doc_ids": ["anolis/kdump"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q058", "question": "系统突然死机重启了，想知道当时发生了什么", "relevant_doc_ids": ["anolis/kdump"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q059", "question": "给龙蜥社区提交 PR 需要签 CLA 吗", "relevant_doc_ids": ["community/contribute"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q060", "question": "我想给社区写代码，应该怎么开始", "relevant_doc_ids": ["community/contribute"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q061", "question": "提交 Bug 报告要包含哪些信息", "relevant_doc_ids": ["community/bug-report"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q062", "question": "发现系统有问题，怎么反馈给开发者", "relevant_doc_ids": ["community/bug-report"], "type": "semantic", "source": "manual-demo"}
+{"qid": "q063", "question": "dnf makecache 是干什么的", "relevant_doc_ids": ["anolis/yum-repo"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q064", "question": "uname -r 输出的内核和期望不一致导致 Job 失败", "relevant_doc_ids": ["tone/kernel-install"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q065", "question": "Failed to download metadata for repo 报错怎么解决", "relevant_doc_ids": ["anolis/yum-repo"], "type": "keyword", "source": "manual-demo"}
+{"qid": "q066", "question": "journalctl 看到心跳超时怎么处理", "relevant_doc_ids": ["tone/toneagent"], "type": "keyword", "source": "manual-demo"}

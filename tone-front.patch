@@ -1,0 +1,1122 @@
+diff --git a/config/config.ts b/config/config.ts
+index 91e936c..c2ebeaa 100644
+--- a/config/config.ts
++++ b/config/config.ts
+@@ -26,7 +26,8 @@ export default defineConfig({
+         locale: true,
+     },
+     define: {
+-        ...process.env,
++        BUILD_APP_ENV: BUILD_APP_ENV || false,
++        REACT_APP_ENV: REACT_APP_ENV || false,
+         logoutUrl: BUILD_APP_ENV ? "/" : logoutUrl,
+         agent_list: BUILD_APP_ENV ? [{ "value": "toneagent", "label": "ToneAgent" }] : JSON.parse(agent_list as any),
+         open_agent: "toneagent",
+diff --git a/config/proxy.ts b/config/proxy.ts
+index 8cb7c91..5536fcb 100644
+--- a/config/proxy.ts
++++ b/config/proxy.ts
+@@ -10,6 +10,11 @@ const { BUILD_APP_ENV, proxy } = process.env as any
+ 
+ export default {
+     dev: {
++        // 智能问答（RAG）服务，必须写在 '/api/' 前面，否则会被 '/api/' 先匹配走
++        '/api/assistant/': {
++            target: process.env.ASSISTANT_API || 'http://127.0.0.1:8000',
++            changeOrigin: true,
++        },
+         '/api/': {
+             target: process.env[BUILD_APP_ENV] || proxy || "http://localhost:20002",
+             changeOrigin: true,
+diff --git a/package.json b/package.json
+index 24b4a69..ed57a3a 100644
+--- a/package.json
++++ b/package.json
+@@ -78,6 +78,7 @@
+         "classnames": "^2.2.6",
+         "clipboard": "^2.0.6",
+         "codemirror": "^5.54.0",
++        "dompurify": "^3.2.0",
+         "echarts": "^5.5.0",
+         "highlight.js": "^11.7.0",
+         "immer": "^9.0.6",
+diff --git a/pnpm-lock.yaml b/pnpm-lock.yaml
+index bf68dc4..b749c67 100644
+--- a/pnpm-lock.yaml
++++ b/pnpm-lock.yaml
+@@ -89,6 +89,9 @@ dependencies:
+   codemirror:
+     specifier: ^5.54.0
+     version: 5.65.12
++  dompurify:
++    specifier: ^3.2.0
++    version: 3.4.18
+   echarts:
+     specifier: ^5.5.0
+     version: 5.5.0
+@@ -155,9 +158,6 @@ dependencies:
+   styled-components:
+     specifier: ^5.2.1
+     version: 5.3.8(react-dom@17.0.2)(react-is@18.2.0)(react@17.0.2)
+-  tiptap-extension-resize-image:
+-    specifier: ^1.0.3
+-    version: 1.0.3(@tiptap/core@2.2.4)(@tiptap/extension-image@2.2.4)(@tiptap/pm@2.2.4)
+   umi:
+     specifier: ^3.5.35
+     version: 3.5.37(react-router@5.3.4)
+@@ -2734,6 +2734,7 @@ packages:
+ 
+   /@remirror/core-constants@2.0.2:
+     resolution: {integrity: sha512-dyHY+sMF0ihPus3O27ODd4+agdHMEmuRdyiZJ2CCWjPV5UFmn17ZbElvk6WOGVE4rdCJKZQCrPV2BcikOMLUGQ==}
++    dev: true
+ 
+   /@sinonjs/commons@1.8.6:
+     resolution: {integrity: sha512-Ky+XkAkqPZSm3NLBeUng77EBQl3cmeJhITaGHdYH8kjVB+aun3S4XBRti2zt17mtt0mIUDiNxYeoJm6drVvBJQ==}
+@@ -2782,6 +2783,7 @@ packages:
+       '@tiptap/pm': ^2.0.0
+     dependencies:
+       '@tiptap/pm': 2.2.4
++    dev: true
+ 
+   /@tiptap/extension-blockquote@2.2.4(@tiptap/core@2.2.4):
+     resolution: {integrity: sha512-FrfPnn0VgVrUwWLwja1afX99JGLp6PE9ThVcmri+tLwUZQvTTVcCvHoCdOakav3/nge1+aV4iE3tQdyq1tWI9Q==}
+@@ -2957,6 +2959,7 @@ packages:
+       '@tiptap/core': ^2.0.0
+     dependencies:
+       '@tiptap/core': 2.2.4(@tiptap/pm@2.2.4)
++    dev: true
+ 
+   /@tiptap/extension-italic@2.2.4(@tiptap/core@2.2.4):
+     resolution: {integrity: sha512-qIhGNvWnsQswSgEMRA8jQQjxfkOGNAuNWKEVQX9DPoqAUgknT41hQcAMP8L2+OdACpb2jbVMOO5Cy5Dof2L8/w==}
+@@ -3122,6 +3125,7 @@ packages:
+       prosemirror-trailing-node: 2.0.8(prosemirror-model@1.19.4)(prosemirror-state@1.4.3)(prosemirror-view@1.33.1)
+       prosemirror-transform: 1.8.0
+       prosemirror-view: 1.33.1
++    dev: true
+ 
+   /@tiptap/react@2.2.4(@tiptap/core@2.2.4)(@tiptap/pm@2.2.4)(react-dom@17.0.2)(react@17.0.2):
+     resolution: {integrity: sha512-HkYmMZWcETPZn3KpzdDg/ns2TKeFh54TvtCEInA4ljYtWGLoZc/A+KaiEtMIgVs+Mo1XwrhuoNGjL9c0OK2HJw==}
+@@ -3537,6 +3541,12 @@ packages:
+       csstype: 3.1.1
+     dev: false
+ 
++  /@types/trusted-types@2.0.7:
++    resolution: {integrity: sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==}
++    requiresBuild: true
++    dev: false
++    optional: true
++
+   /@types/unist@2.0.6:
+     resolution: {integrity: sha512-PBjIUxZHOuj0R15/xuwJYjFi+KZdNFrehocChv4g5hu6aFroHue8m0lBP0POdK2nKzbw0cgV1mws8+V/JAcEkQ==}
+     dev: true
+@@ -4687,6 +4697,7 @@ packages:
+ 
+   /acorn-import-assertions@1.9.0(acorn@8.11.3):
+     resolution: {integrity: sha512-cmMwop9x+8KFhxvKrKfPYmN6/pKTYYHBqLa0DfvVZcKMJWNyWLnaqND7dx/qn66R7ewM1UX5XMaDVP5wlVTaVA==}
++    deprecated: package has been renamed to acorn-import-attributes
+     peerDependencies:
+       acorn: ^8
+     dependencies:
+@@ -4995,6 +5006,7 @@ packages:
+ 
+   /argparse@2.0.1:
+     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
++    dev: true
+ 
+   /arr-diff@4.0.0:
+     resolution: {integrity: sha512-YVIQ82gZPGBebQV/a8dar4AitzCQs0jjXwMPZllpXMaGjXPYVUawSxQrRsjhjupyVxEvbHgUmIhKVlND+j02kA==}
+@@ -6340,6 +6352,7 @@ packages:
+ 
+   /crelt@1.0.6:
+     resolution: {integrity: sha512-VQ2MBenTq1fWZUH9DJNGti7kKv6EeAuYr3cLwxUWhIu1baTaXh4Ib5W2CqHVqib4/MqbYGJqiL3Zb8GJZr3l4g==}
++    dev: true
+ 
+   /crequire@1.8.1:
+     resolution: {integrity: sha512-GbElTY148ZRQbC3E3XlMAitKE9rEyO/2mIkkjwgqzIucRmHiaAMF2Ynpwsuxzp08SdAbeN4pTrEqZs0MWRN6/w==}
+@@ -6814,6 +6827,12 @@ packages:
+       domelementtype: 1.3.1
+     dev: true
+ 
++  /dompurify@3.4.18:
++    resolution: {integrity: sha512-ofe3wI/uNm68HInABYFJYqQxRw1EaKAjNdrFVKqjUY+UZurvNd2L/HuQe097s/4RivWiZyP6tT7aoT8atjfhwg==}
++    optionalDependencies:
++      '@types/trusted-types': 2.0.7
++    dev: false
++
+   /domutils@1.7.0:
+     resolution: {integrity: sha512-Lgd2XcJ/NjEw+7tFvfKxOzCYKZsdct5lczQ2ZaQY8Djz7pfAD3Gbp8ySJWtreII/vDlMVmxwa6pHmdxIYgttDg==}
+     dependencies:
+@@ -7008,6 +7027,7 @@ packages:
+   /entities@4.5.0:
+     resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
+     engines: {node: '>=0.12'}
++    dev: true
+ 
+   /error-ex@1.3.2:
+     resolution: {integrity: sha512-7dFHNmqeFSEt2ZBsCriorKnn3Z2pj+fd9kmI6QoWw4//DL+icEBfc0U7qJCisqrTsKTjw4fNFy2pW9OqStD84g==}
+@@ -7158,6 +7178,7 @@ packages:
+   /escape-string-regexp@4.0.0:
+     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
+     engines: {node: '>=10'}
++    dev: true
+ 
+   /escodegen@2.0.0:
+     resolution: {integrity: sha512-mmHKys/C8BFUGI+MAWNcSYoORYLMdPzjrknd2Vc+bUsjN5bXcr8EhrNB+UTqfL1y3I9c4fw2ihgtMPQLBRiQxw==}
+@@ -8090,7 +8111,7 @@ packages:
+     resolution: {integrity: sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw==}
+     engines: {node: '>= 4.0'}
+     os: [darwin]
+-    deprecated: The v1 package contains DANGEROUS / INSECURE binaries. Upgrade to safe fsevents v2
++    deprecated: Upgrade to fsevents v2 to mitigate potential security issues
+     requiresBuild: true
+     dependencies:
+       bindings: 1.5.0
+@@ -10167,6 +10188,7 @@ packages:
+     resolution: {integrity: sha512-5aHCbzQRADcdP+ATqnDuhhJ/MRIqDkZX5pyjFHRRysS8vZ5AbqGEoFIb6pYHPZ+L/OC2Lc+xT8uHVVR5CAK/wQ==}
+     dependencies:
+       uc.micro: 2.1.0
++    dev: true
+ 
+   /linkifyjs@4.1.3:
+     resolution: {integrity: sha512-auMesunaJ8yfkHvK4gfg1K0SaKX/6Wn9g2Aac/NwX+l5VdmFZzo/hdPGxEOETj+ryRa4/fiOPjeeKURSAJx1sg==}
+@@ -10435,6 +10457,7 @@ packages:
+       mdurl: 2.0.0
+       punycode.js: 2.3.1
+       uc.micro: 2.1.0
++    dev: true
+ 
+   /marked@4.2.12:
+     resolution: {integrity: sha512-yr8hSKa3Fv4D3jdZmtMMPghgVt6TWbk86WQaWhDloQjRSQhMMYCAro7jP7VDJrjjdV8pxVxMssXS8B8Y5DZ5aw==}
+@@ -10491,6 +10514,7 @@ packages:
+ 
+   /mdurl@2.0.0:
+     resolution: {integrity: sha512-Lf+9+2r+Tdp5wXDXC4PcIBjTDtq4UKjCPMQhKIuzpJNW0b96kVqSwW0bT7FhRSfmAiFYgP+SCRvdrDozfh0U5w==}
++    dev: true
+ 
+   /media-typer@0.3.0:
+     resolution: {integrity: sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==}
+@@ -11226,6 +11250,7 @@ packages:
+ 
+   /orderedmap@2.1.1:
+     resolution: {integrity: sha512-TvAWxi0nDe1j/rtMcWcIj94+Ffe6n7zhow33h40SKxmsmozs6dz/e+EajymfoFcHd7sxNn8yHM8839uixMOV6g==}
++    dev: true
+ 
+   /os-browserify@0.3.0:
+     resolution: {integrity: sha512-gjcpUc3clBf9+210TRaDWbf+rZZZEshZ+DlXMRCeAjp0xhTrnQsKHypIy1J3d5hKdUzj69t708EHtU8P6bUn0A==}
+@@ -12145,11 +12170,13 @@ packages:
+     resolution: {integrity: sha512-J7msc6wbxB4ekDFj+n9gTW/jav/p53kdlivvuppHsrZXCaQdVgRghoZbSS3kwrRyAstRVQ4/+u5k7YfLgkkQvQ==}
+     dependencies:
+       prosemirror-transform: 1.8.0
++    dev: true
+ 
+   /prosemirror-collab@1.3.1:
+     resolution: {integrity: sha512-4SnynYR9TTYaQVXd/ieUvsVV4PDMBzrq2xPUWutHivDuOshZXqQ5rGbZM84HEaXKbLdItse7weMGOUdDVcLKEQ==}
+     dependencies:
+       prosemirror-state: 1.4.3
++    dev: true
+ 
+   /prosemirror-commands@1.5.2:
+     resolution: {integrity: sha512-hgLcPaakxH8tu6YvVAaILV2tXYsW3rAdDR8WNkeKGcgeMVQg3/TMhPdVoh7iAmfgVjZGtcOSjKiQaoeKjzd2mQ==}
+@@ -12157,6 +12184,7 @@ packages:
+       prosemirror-model: 1.19.4
+       prosemirror-state: 1.4.3
+       prosemirror-transform: 1.8.0
++    dev: true
+ 
+   /prosemirror-dropcursor@1.8.1:
+     resolution: {integrity: sha512-M30WJdJZLyXHi3N8vxN6Zh5O8ZBbQCz0gURTfPmTIBNQ5pxrdU7A58QkNqfa98YEjSAL1HUyyU34f6Pm5xBSGw==}
+@@ -12164,6 +12192,7 @@ packages:
+       prosemirror-state: 1.4.3
+       prosemirror-transform: 1.8.0
+       prosemirror-view: 1.33.1
++    dev: true
+ 
+   /prosemirror-gapcursor@1.3.2:
+     resolution: {integrity: sha512-wtjswVBd2vaQRrnYZaBCbyDqr232Ed4p2QPtRIUK5FuqHYKGWkEwl08oQM4Tw7DOR0FsasARV5uJFvMZWxdNxQ==}
+@@ -12172,6 +12201,7 @@ packages:
+       prosemirror-model: 1.19.4
+       prosemirror-state: 1.4.3
+       prosemirror-view: 1.33.1
++    dev: true
+ 
+   /prosemirror-history@1.3.2:
+     resolution: {integrity: sha512-/zm0XoU/N/+u7i5zepjmZAEnpvjDtzoPWW6VmKptcAnPadN/SStsBjMImdCEbb3seiNTpveziPTIrXQbHLtU1g==}
+@@ -12180,24 +12210,28 @@ packages:
+       prosemirror-transform: 1.8.0
+       prosemirror-view: 1.33.1
+       rope-sequence: 1.3.4
++    dev: true
+ 
+   /prosemirror-inputrules@1.4.0:
+     resolution: {integrity: sha512-6ygpPRuTJ2lcOXs9JkefieMst63wVJBgHZGl5QOytN7oSZs3Co/BYbc3Yx9zm9H37Bxw8kVzCnDsihsVsL4yEg==}
+     dependencies:
+       prosemirror-state: 1.4.3
+       prosemirror-transform: 1.8.0
++    dev: true
+ 
+   /prosemirror-keymap@1.2.2:
+     resolution: {integrity: sha512-EAlXoksqC6Vbocqc0GtzCruZEzYgrn+iiGnNjsJsH4mrnIGex4qbLdWWNza3AW5W36ZRrlBID0eM6bdKH4OStQ==}
+     dependencies:
+       prosemirror-state: 1.4.3
+       w3c-keyname: 2.2.8
++    dev: true
+ 
+   /prosemirror-markdown@1.12.0:
+     resolution: {integrity: sha512-6F5HS8Z0HDYiS2VQDZzfZP6A0s/I0gbkJy8NCzzDMtcsz3qrfqyroMMeoSjAmOhDITyon11NbXSzztfKi+frSQ==}
+     dependencies:
+       markdown-it: 14.0.0
+       prosemirror-model: 1.19.4
++    dev: true
+ 
+   /prosemirror-menu@1.2.4:
+     resolution: {integrity: sha512-S/bXlc0ODQup6aiBbWVsX/eM+xJgCTAfMq/nLqaO5ID/am4wS0tTCIkzwytmao7ypEtjj39i7YbJjAgO20mIqA==}
+@@ -12206,16 +12240,19 @@ packages:
+       prosemirror-commands: 1.5.2
+       prosemirror-history: 1.3.2
+       prosemirror-state: 1.4.3
++    dev: true
+ 
+   /prosemirror-model@1.19.4:
+     resolution: {integrity: sha512-RPmVXxUfOhyFdayHawjuZCxiROsm9L4FCUA6pWI+l7n2yCBsWy9VpdE1hpDHUS8Vad661YLY9AzqfjLhAKQ4iQ==}
+     dependencies:
+       orderedmap: 2.1.1
++    dev: true
+ 
+   /prosemirror-schema-basic@1.2.2:
+     resolution: {integrity: sha512-/dT4JFEGyO7QnNTe9UaKUhjDXbTNkiWTq/N4VpKaF79bBjSExVV2NXmJpcM7z/gD7mbqNjxbmWW5nf1iNSSGnw==}
+     dependencies:
+       prosemirror-model: 1.19.4
++    dev: true
+ 
+   /prosemirror-schema-list@1.3.0:
+     resolution: {integrity: sha512-Hz/7gM4skaaYfRPNgr421CU4GSwotmEwBVvJh5ltGiffUJwm7C8GfN/Bc6DR1EKEp5pDKhODmdXXyi9uIsZl5A==}
+@@ -12223,6 +12260,7 @@ packages:
+       prosemirror-model: 1.19.4
+       prosemirror-state: 1.4.3
+       prosemirror-transform: 1.8.0
++    dev: true
+ 
+   /prosemirror-state@1.4.3:
+     resolution: {integrity: sha512-goFKORVbvPuAQaXhpbemJFRKJ2aixr+AZMGiquiqKxaucC6hlpHNZHWgz5R7dS4roHiwq9vDctE//CZ++o0W1Q==}
+@@ -12230,6 +12268,7 @@ packages:
+       prosemirror-model: 1.19.4
+       prosemirror-transform: 1.8.0
+       prosemirror-view: 1.33.1
++    dev: true
+ 
+   /prosemirror-tables@1.3.7:
+     resolution: {integrity: sha512-oEwX1wrziuxMtwFvdDWSFHVUWrFJWt929kVVfHvtTi8yvw+5ppxjXZkMG/fuTdFo+3DXyIPSKfid+Be1npKXDA==}
+@@ -12239,6 +12278,7 @@ packages:
+       prosemirror-state: 1.4.3
+       prosemirror-transform: 1.8.0
+       prosemirror-view: 1.33.1
++    dev: true
+ 
+   /prosemirror-trailing-node@2.0.8(prosemirror-model@1.19.4)(prosemirror-state@1.4.3)(prosemirror-view@1.33.1):
+     resolution: {integrity: sha512-ujRYhSuhQb1Jsarh1IHqb2KoSnRiD7wAMDGucP35DN7j5af6X7B18PfdPIrbwsPTqIAj0fyOvxbuPsWhNvylmA==}
+@@ -12252,11 +12292,13 @@ packages:
+       prosemirror-model: 1.19.4
+       prosemirror-state: 1.4.3
+       prosemirror-view: 1.33.1
++    dev: true
+ 
+   /prosemirror-transform@1.8.0:
+     resolution: {integrity: sha512-BaSBsIMv52F1BVVMvOmp1yzD3u65uC3HTzCBQV1WDPqJRQ2LuHKcyfn0jwqodo8sR9vVzMzZyI+Dal5W9E6a9A==}
+     dependencies:
+       prosemirror-model: 1.19.4
++    dev: true
+ 
+   /prosemirror-view@1.33.1:
+     resolution: {integrity: sha512-62qkYgSJIkwIMMCpuGuPzc52DiK1Iod6TWoIMxP4ja6BTD4yO8kCUL64PZ/WhH/dJ9fW0CDO39FhH1EMyhUFEg==}
+@@ -12264,6 +12306,7 @@ packages:
+       prosemirror-model: 1.19.4
+       prosemirror-state: 1.4.3
+       prosemirror-transform: 1.8.0
++    dev: true
+ 
+   /protocols@1.4.8:
+     resolution: {integrity: sha512-IgjKyaUSjsROSO8/D49Ab7hP8mJgTYcqApOqdPhLoPxAplXmkp+zRvsrSQjFn5by0rhm4VH0GAUELIPpx7B1yg==}
+@@ -12308,6 +12351,7 @@ packages:
+   /punycode.js@2.3.1:
+     resolution: {integrity: sha512-uxFIHU0YlHYhDQtV4R9J6a52SLx28BCjT+4ieh7IGbgwVJWO+km431c4yRlREUAsAmt/uMjQUyQHNEPf0M39CA==}
+     engines: {node: '>=6'}
++    dev: true
+ 
+   /punycode@1.3.2:
+     resolution: {integrity: sha512-RofWgt/7fL5wP1Y7fxE7/EmTLzQVnB0ycyibJ0OOHIlJqTNzglYFxVwETOcIoJqJmpDXJ9xImDv+Fq34F/d4Dw==}
+@@ -14148,6 +14192,7 @@ packages:
+ 
+   /rope-sequence@1.3.4:
+     resolution: {integrity: sha512-UT5EDe2cu2E/6O4igUr5PSFs23nvvukicWHx6GnOPlHAiiYbzNuCRQCuiUdHJQcqKalLKlrYJnjY0ySGsXNQXQ==}
++    dev: true
+ 
+   /rsvp@4.8.5:
+     resolution: {integrity: sha512-nfMOlASu9OnRJo1mbEk2cz0D56a1MBNrJ7orjRZQG10XDyuvwksKbuXNp6qa+kbn839HwjwhBzhFmdsaEAfauA==}
+@@ -15391,18 +15436,6 @@ packages:
+       - '@tiptap/pm'
+     dev: true
+ 
+-  /tiptap-extension-resize-image@1.0.3(@tiptap/core@2.2.4)(@tiptap/extension-image@2.2.4)(@tiptap/pm@2.2.4):
+-    resolution: {integrity: sha512-4kjAgRCliVjE9YzZFO+adAk0yZZVKOYMGhwaSX3Fl7czl67qWtqDn0vEBh/Za4KDVfo0OM8MkuAM9JriHfbKLQ==}
+-    peerDependencies:
+-      '@tiptap/core': ^2.0.0
+-      '@tiptap/extension-image': ^2.0.0
+-      '@tiptap/pm': ^2.0.0
+-    dependencies:
+-      '@tiptap/core': 2.2.4(@tiptap/pm@2.2.4)
+-      '@tiptap/extension-image': 2.2.4(@tiptap/core@2.2.4)
+-      '@tiptap/pm': 2.2.4
+-    dev: false
+-
+   /tmp@0.0.33:
+     resolution: {integrity: sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw==}
+     engines: {node: '>=0.6.0'}
+@@ -15676,6 +15709,7 @@ packages:
+ 
+   /uc.micro@2.1.0:
+     resolution: {integrity: sha512-ARDJmphmdvUk6Glw7y9DQ2bFkKBHwQHLi2lsaH6PPmz/Ka9sFOBsBluozhDltWmnv9u/cF6Rt87znRTPV+yp/A==}
++    dev: true
+ 
+   /umi-plugin-antd-icon-config@2.0.4(react-dom@17.0.2)(react@17.0.2)(umi@3.5.37):
+     resolution: {integrity: sha512-3OqH5KFiuVzhr8UwLO+KZHzHySAqgDBLQUTh8YrehHSs3wgNDYKt0Tk3DIx8SGA6+46bspaK4iIOpTIS7f7RXw==}
+@@ -16083,6 +16117,7 @@ packages:
+ 
+   /w3c-keyname@2.2.8:
+     resolution: {integrity: sha512-dpojBhNsCNN7T82Tm7k26A6G9ML3NkhDsnw9n/eoxSRlVBB4CEtIQ/KTCLI2Fwf3ataSXRhYFkQi3SlnFwPvPQ==}
++    dev: true
+ 
+   /w3c-xmlserializer@2.0.0:
+     resolution: {integrity: sha512-4tzD0mF8iSiMiNs30BiLO3EpfGLZUT2MSX/G+o7ZywDzliWQ3OPtTZ0PTC3B3ca1UAf4cJMHB+2Bf56EriJuRA==}
+diff --git a/src/components/HelperChatBoot/HelperContext/AnswerContent.tsx b/src/components/HelperChatBoot/HelperContext/AnswerContent.tsx
+index 85dcc4f..0af2d27 100644
+--- a/src/components/HelperChatBoot/HelperContext/AnswerContent.tsx
++++ b/src/components/HelperChatBoot/HelperContext/AnswerContent.tsx
+@@ -1,4 +1,5 @@
+ import React from 'react';
++import DOMPurify from 'dompurify';
+ import styled from 'styled-components';
+ import { Empty, Input, Row, Space, Tag, Typography } from 'antd';
+ import RichEditor from '@/components/RichEditor';
+@@ -179,7 +180,7 @@ const Server: React.FC<any> = (props) => {
+         // 将parts数组中的内容转换为适当的React元素
+         parts.forEach((part, index) => {
+             if (part.type === 'html') {
+-                result.push(<span key={index} dangerouslySetInnerHTML={{ __html: part.content }} />);
++                result.push(<span key={index} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(part.content) }} />);
+             } else if (part.type === 'link') {
+                 result.push(
+                     <span><Typography.Link key={index} onClick={() => handleSelectProblem(part.content)} style={{ cursor: 'pointer' }}>
+diff --git a/src/components/HelperChatBoot/HelperContext/index.tsx b/src/components/HelperChatBoot/HelperContext/index.tsx
+index 9574a6d..9d945c0 100644
+--- a/src/components/HelperChatBoot/HelperContext/index.tsx
++++ b/src/components/HelperChatBoot/HelperContext/index.tsx
+@@ -9,6 +9,10 @@ import Feedback from './Feedback';
+ import { getBootSetting } from '@/pages/SystemConf/Question/Knowledge/services';
+ import { useRequest } from 'umi';
+ import { useHelperBootContext } from '../Provider';
++import RagChat from '../RagChat';
++
++/* 标签页编号：0、1 保持原样（其它代码里有 setActive(1) 跳转「自助排查」），新增的智能问答用 2 */
++export const TAB_AI_QA = 2;
+ 
+ export const CHART_DEFAULT_BOTTOM_PX = `76px`;
+ 
+@@ -179,6 +183,12 @@ const HelperContext: React.ForwardRefRenderFunction<any, any> = (props, ref) =>
+                     </Navbar>
+                     <ChartWrapper>
+                         <MenuBar>
++                            <div
++                                className={cls(active === TAB_AI_QA ? 'active' : '')}
++                                onClick={() => setActive(TAB_AI_QA)}
++                            >
++                                智能问答
++                            </div>
+                             <div
+                                 className={cls(active === 0 ? 'active' : '')}
+                                 onClick={() => setActive(0)}
+@@ -193,7 +203,11 @@ const HelperContext: React.ForwardRefRenderFunction<any, any> = (props, ref) =>
+                             </div>
+                         </MenuBar>
+ 
+-                        <div>{active === 0 ? <AnswerContent /> : <SelfHelpModule />}</div>
++                        <div>
++                            {active === TAB_AI_QA && <RagChat />}
++                            {active === 0 && <AnswerContent />}
++                            {active === 1 && <SelfHelpModule />}
++                        </div>
+                     </ChartWrapper>
+                 </Wrapper>
+             ) : (
+diff --git a/src/components/HelperChatBoot/RagChat/AssistantBubble.tsx b/src/components/HelperChatBoot/RagChat/AssistantBubble.tsx
+new file mode 100644
+index 0000000..55e0a94
+--- /dev/null
++++ b/src/components/HelperChatBoot/RagChat/AssistantBubble.tsx
+@@ -0,0 +1,120 @@
++import React from 'react';
++import { Button, Spin, Tooltip, Typography } from 'antd';
++import { renderAnswer } from './markdown';
++import { BotBubble, FollowUps, SourceItem } from './styles';
++import type { AssistantMessage, SourceRef } from './types';
++
++interface Props {
++    message: AssistantMessage;
++    onAsk: (question: string) => void; // 点击推荐追问
++    onRetry: (id: string) => void;
++    disabled: boolean; // 有问题正在回答时，追问按钮先禁用
++}
++
++const sourceLabel = (s: SourceRef) => (s.section ? `${s.title} › ${s.section}` : s.title);
++
++function sourceHref(raw: string): string | undefined {
++    if (!raw.trim()) return undefined;
++    try {
++        const url = new URL(raw, window.location.href);
++        return ['https:', 'http:'].includes(url.protocol) ? url.href : undefined;
++    } catch {
++        return undefined;
++    }
++}
++
++const AssistantBubble: React.FC<Props> = ({ message, onAsk, onRetry, disabled }) => {
++    const [active, setActive] = React.useState<number | null>(null);
++    const listRef = React.useRef<HTMLDivElement>(null);
++    const { reply } = message;
++
++    const html = React.useMemo(
++        () => (reply ? renderAnswer(reply.answer, reply.sources.length) : ''),
++        [reply],
++    );
++
++    // 点击正文里的 [n]：滚动到第 n 个来源并高亮 1.5 秒
++    const handleAnswerClick = (e: React.MouseEvent<HTMLDivElement>) => {
++        const target = (e.target as HTMLElement).closest('[data-cite]');
++        if (!target) return;
++        const idx = Number(target.getAttribute('data-cite'));
++        setActive(idx);
++        listRef.current
++            ?.querySelector(`[data-source="${idx}"]`)
++            ?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
++        window.setTimeout(() => setActive(null), 1500);
++    };
++
++    if (message.status === 'loading') {
++        return (
++            <BotBubble>
++                <Spin size="small" /> <Typography.Text type="secondary">正在检索文档并生成回答…</Typography.Text>
++            </BotBubble>
++        );
++    }
++
++    if (message.status === 'error' || !reply) {
++        return (
++            <BotBubble>
++                <Typography.Text type="danger">{message.error || '出错了'}</Typography.Text>{' '}
++                <Typography.Link onClick={() => onRetry(message.id)}>重试</Typography.Link>
++            </BotBubble>
++        );
++    }
++
++    return (
++        <BotBubble>
++            {reply.warning && (
++                <Typography.Text type="warning" style={{ fontSize: 12 }}>
++                    {reply.warning}
++                </Typography.Text>
++            )}
++
++            {/* renderAnswer 内部已经用 DOMPurify 清洗过，可以安全地插入 */}
++            <div className="rag-answer" onClick={handleAnswerClick} dangerouslySetInnerHTML={{ __html: html }} />
++
++            {reply.sources.length > 0 && (
++                <div ref={listRef}>
++                    <div className="rag-label">参考来源</div>
++                    {reply.sources.map((s) => (
++                        <Tooltip key={s.chunk_id} title={s.snippet} placement="left" mouseEnterDelay={0.5}>
++                            <SourceItem
++                                href={sourceHref(s.url)}
++                                target="_blank"
++                                rel="noopener noreferrer"
++                                data-source={s.index}
++                                $cited={s.cited}
++                                $active={active === s.index}
++                            >
++                                <span className="idx">[{s.index}]</span>
++                                <span className="text">{sourceLabel(s)}</span>
++                            </SourceItem>
++                        </Tooltip>
++                    ))}
++                </div>
++            )}
++
++            {reply.follow_ups.length > 0 && (
++                <>
++                    <div className="rag-label">你可能还想问</div>
++                    <FollowUps>
++                        {reply.follow_ups.map((q) => (
++                            <Button key={q} size="small" disabled={disabled} onClick={() => onAsk(q)}>
++                                {q}
++                            </Button>
++                        ))}
++                    </FollowUps>
++                </>
++            )}
++
++            <div className="rag-meta">
++                {reply.mode} 检索 · {reply.latency_ms} ms{reply.llm_used ? '' : ' · 未使用大模型'}
++                {reply.query && reply.query !== message.question && (
++                    <div>按「{reply.query}」检索（结合了上文）</div>
++                )}
++            </div>
++        </BotBubble>
++    );
++};
++
++export default AssistantBubble;
+diff --git a/src/components/HelperChatBoot/RagChat/index.tsx b/src/components/HelperChatBoot/RagChat/index.tsx
+new file mode 100644
+index 0000000..d500faa
+--- /dev/null
++++ b/src/components/HelperChatBoot/RagChat/index.tsx
+@@ -0,0 +1,93 @@
++import React from 'react';
++import { Button, Input, Typography } from 'antd';
++import { SendOutlined } from '@ant-design/icons';
++import AssistantBubble from './AssistantBubble';
++import { useRagChat } from './useRagChat';
++import { BotBubble, FollowUps, InputBar, MessageList, UserBubble, Wrapper } from './styles';
++import type { RetrievalMode } from './types';
++
++export interface RagChatProps {
++    mode?: RetrievalMode;
++    topK?: number;
++    starterQuestions?: string[]; // 欢迎语下面的示例问题
++}
++
++const DEFAULT_STARTERS = [
++    '怎么把自己的服务器接入 T-One？',
++    '提交的测试一直在排队是怎么回事？',
++    'tone-cli 有哪些常用命令？',
++];
++
++/**
++ * T-One 答疑助手的「智能问答」标签页：
++ *   基于帮助文档的混合检索（BM25 + 向量）回答问题，回答附带可点击的来源链接和推荐追问。
++ */
++const RagChat: React.FC<RagChatProps> = ({ mode = 'hybrid', topK = 5, starterQuestions = DEFAULT_STARTERS }) => {
++    const { messages, loading, ask, retry } = useRagChat({ mode, topK });
++    const [input, setInput] = React.useState('');
++    const listRef = React.useRef<HTMLDivElement>(null);
++
++    // 自动滚动：提问 / 加载中 → 滚到底部；回答完成 → 把刚才的问题滚到顶部，让用户从回答的开头读起
++    React.useEffect(() => {
++        const el = listRef.current;
++        if (!el) return;
++        const last = messages[messages.length - 1];
++        const questions = el.querySelectorAll<HTMLElement>('[data-role="user"]');
++        const lastQuestion = questions[questions.length - 1];
++        if (last?.role === 'assistant' && last.status === 'done' && lastQuestion) {
++            el.scrollTo({ top: lastQuestion.offsetTop - 12, behavior: 'smooth' });
++        } else {
++            el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
++        }
++    }, [messages]);
++
++    const send = (text: string) => {
++        if (!text.trim() || loading) return;
++        ask(text);
++        setInput('');
++    };
++
++    return (
++        <Wrapper>
++            <MessageList ref={listRef}>
++                <BotBubble>
++                    <div>你好，我是 T-One 智能助手，会根据平台帮助文档回答问题，并附上来源链接。可以试试：</div>
++                    <FollowUps style={{ marginTop: 8 }}>
++                        {starterQuestions.map((q) => (
++                            <Button key={q} size="small" type="dashed" disabled={loading} onClick={() => send(q)}>
++                                {q}
++                            </Button>
++                        ))}
++                    </FollowUps>
++                </BotBubble>
++
++                {messages.map((m) =>
++                    m.role === 'user' ? (
++                        <UserBubble key={m.id} data-role="user">
++                            {m.text}
++                        </UserBubble>
++                    ) : (
++                        <AssistantBubble key={m.id} message={m} onAsk={send} onRetry={retry} disabled={loading} />
++                    ),
++                )}
++            </MessageList>
++
++            <InputBar>
++                <Input
++                    placeholder="输入问题，回车发送"
++                    value={input}
++                    maxLength={500}
++                    onChange={(e) => setInput(e.target.value)}
++                    onPressEnter={(e) => {
++                        if (!e.nativeEvent.isComposing && e.nativeEvent.keyCode !== 229) send(input);
++                    }}
++                />
++                <Typography.Link disabled={loading || !input.trim()} onClick={() => send(input)} aria-label="发送">
++                    <SendOutlined style={{ fontSize: 18 }} />
++                </Typography.Link>
++            </InputBar>
++        </Wrapper>
++    );
++};
++
++export default RagChat;
+diff --git a/src/components/HelperChatBoot/RagChat/markdown.ts b/src/components/HelperChatBoot/RagChat/markdown.ts
+new file mode 100644
+index 0000000..36605e3
+--- /dev/null
++++ b/src/components/HelperChatBoot/RagChat/markdown.ts
+@@ -0,0 +1,42 @@
++import DOMPurify from 'dompurify';
++import { marked } from 'marked';
++
++export function renderAnswer(markdown: string, sourceCount: number): string {
++    const html = marked.parse(markdown, { breaks: true, gfm: true }) as string;
++    const container = document.createElement('div');
++    container.append(DOMPurify.sanitize(html, { RETURN_DOM_FRAGMENT: true, USE_PROFILES: { html: true } }));
++
++    container.querySelectorAll('a').forEach((link) => {
++        link.target = '_blank';
++        link.rel = 'noopener noreferrer';
++    });
++
++    // Only replace citations in prose, preserving code, link labels and URL attributes.
++    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
++    const nodes: Text[] = [];
++    while (walker.nextNode()) {
++        const node = walker.currentNode as Text;
++        if (!node.parentElement?.closest('pre, code, a, button') && node.data.includes('[')) nodes.push(node);
++    }
++    for (const node of nodes) {
++        const fragment = document.createDocumentFragment();
++        let offset = 0;
++        for (const match of node.data.matchAll(/\[(\d{1,2})\]/g)) {
++            const index = Number(match[1]);
++            if (match.index === undefined || index < 1 || index > sourceCount) continue;
++            const button = document.createElement('button');
++            button.type = 'button';
++            button.className = 'rag-cite';
++            button.dataset.cite = String(index);
++            button.setAttribute('aria-label', `查看来源 ${index}`);
++            button.textContent = match[0];
++            fragment.append(node.data.slice(offset, match.index), button);
++            offset = match.index + match[0].length;
++        }
++        if (offset) {
++            fragment.append(node.data.slice(offset));
++            node.replaceWith(fragment);
++        }
++    }
++    return container.innerHTML;
++}
+diff --git a/src/components/HelperChatBoot/RagChat/service.ts b/src/components/HelperChatBoot/RagChat/service.ts
+new file mode 100644
+index 0000000..3ba798c
+--- /dev/null
++++ b/src/components/HelperChatBoot/RagChat/service.ts
+@@ -0,0 +1,28 @@
++import type { ApiEnvelope, AssistantReply, ChatRequest } from './types';
++
++/**
++ * 后端地址前缀。开发时由 config/proxy.ts 把 /api/assistant/ 转发到 RAG 服务（默认 localhost:8000），
++ * 线上由 nginx 转发，所以这里写相对路径即可。
++ */
++export const ASSISTANT_API = '/api/assistant';
++
++/** 用原生 fetch 而不是 umi request：支持 AbortController 取消，也方便组件在 tone-front 之外复用 */
++export async function askAssistant(body: ChatRequest, signal?: AbortSignal): Promise<AssistantReply> {
++    const res = await fetch(`${ASSISTANT_API}/chat`, {
++        method: 'POST',
++        headers: { 'Content-Type': 'application/json' },
++        credentials: 'include',
++        body: JSON.stringify(body),
++        signal,
++    });
++    if (!res.ok) {
++        throw new Error(
++            res.status === 422 ? '问题长度需要在 1~500 字之间' : `助手服务暂时不可用（HTTP ${res.status}）`,
++        );
++    }
++    const json = (await res.json()) as ApiEnvelope<AssistantReply>;
++    if (json.code !== 200) {
++        throw new Error(json.msg || '助手服务异常');
++    }
++    return json.data;
++}
+diff --git a/src/components/HelperChatBoot/RagChat/styles.ts b/src/components/HelperChatBoot/RagChat/styles.ts
+new file mode 100644
+index 0000000..e7c69b2
+--- /dev/null
++++ b/src/components/HelperChatBoot/RagChat/styles.ts
+@@ -0,0 +1,161 @@
++import styled from 'styled-components';
++
++/** 面板内容区是 400 × 412（外框 500 高，减去标题栏 48、标签栏 40），和原来的「常见问题」一样大 */
++export const Wrapper = styled.div`
++    width: 400px;
++    height: 412px;
++    display: flex;
++    flex-direction: column;
++    background-color: #f0f3f6;
++`;
++
++export const MessageList = styled.div`
++    position: relative; /* 让子元素的 offsetTop 以它为基准，自动滚动要用 */
++    flex: 1;
++    overflow-y: auto;
++    padding: 12px 16px;
++    display: flex;
++    flex-direction: column;
++    gap: 12px;
++`;
++
++export const UserBubble = styled.div`
++    align-self: flex-end;
++    max-width: 300px;
++    background-color: #205ce8;
++    color: #fff;
++    border-radius: 10px 0 10px 10px;
++    padding: 9px 14px;
++    font-size: 14px;
++    line-height: 22px;
++    word-break: break-all;
++`;
++
++export const BotBubble = styled.div`
++    align-self: flex-start;
++    width: 340px;
++    background-color: #fff;
++    border-radius: 0 10px 10px 10px;
++    padding: 12px 14px;
++    font-size: 14px;
++    line-height: 22px;
++    color: rgba(0, 0, 0, 0.85);
++
++    .rag-answer {
++        word-break: break-word;
++        p {
++            margin: 0 0 6px;
++        }
++        ol,
++        ul {
++            padding-left: 20px;
++            margin: 0 0 6px;
++        }
++        pre {
++            background: #f5f5f5;
++            padding: 8px;
++            border-radius: 4px;
++            overflow-x: auto;
++            font-size: 12px;
++            margin: 4px 0 8px;
++        }
++        code {
++            background: #f5f5f5;
++            padding: 0 4px;
++            border-radius: 3px;
++            font-size: 12px;
++        }
++        pre code {
++            padding: 0;
++        }
++    }
++
++    .rag-cite {
++        background: transparent;
++        border: 0;
++        padding: 0;
++        font-size: 0.75em;
++        vertical-align: super;
++        color: #205ce8;
++        cursor: pointer;
++        font-weight: 500;
++        margin: 0 1px;
++    }
++
++    .rag-label {
++        margin-top: 10px;
++        margin-bottom: 4px;
++        font-size: 12px;
++        font-weight: 500;
++        color: rgba(0, 0, 0, 0.45);
++    }
++
++    .rag-meta {
++        margin-top: 8px;
++        font-size: 12px;
++        color: #bfbfbf;
++    }
++`;
++
++export const SourceItem = styled.a<{ $cited: boolean; $active: boolean }>`
++    display: flex;
++    gap: 4px;
++    padding: 2px 4px;
++    border-radius: 4px;
++    font-size: 12px;
++    line-height: 20px;
++    color: ${({ $cited }) => ($cited ? '#205ce8' : 'rgba(0, 0, 0, 0.45)')} !important;
++    background-color: ${({ $active }) => ($active ? '#e6f0ff' : 'transparent')};
++    transition: background-color 0.3s;
++
++    .idx {
++        flex-shrink: 0;
++    }
++    .text {
++        overflow: hidden;
++        text-overflow: ellipsis;
++        white-space: nowrap;
++    }
++    &:hover .text {
++        text-decoration: underline;
++    }
++`;
++
++export const FollowUps = styled.div`
++    display: flex;
++    flex-direction: column;
++    align-items: flex-start;
++    gap: 6px;
++
++    button {
++        height: auto;
++        max-width: 100%;
++        white-space: normal;
++        text-align: left;
++        border-radius: 12px;
++        font-size: 12px;
++        padding: 2px 10px;
++    }
++`;
++
++export const InputBar = styled.div`
++    height: 48px;
++    flex-shrink: 0;
++    display: flex;
++    align-items: center;
++    gap: 8px;
++    padding: 0 12px 0 16px;
++    background-color: #fff;
++    border-radius: 0 0 10px 10px;
++
++    .ant-input {
++        height: 32px;
++        border-radius: 16px;
++        background-color: #f0f2f5;
++        border-color: transparent;
++    }
++    .ant-input:focus {
++        box-shadow: none;
++        border-color: #205ce8;
++    }
++`;
+diff --git a/src/components/HelperChatBoot/RagChat/types.ts b/src/components/HelperChatBoot/RagChat/types.ts
+new file mode 100644
+index 0000000..9953205
+--- /dev/null
++++ b/src/components/HelperChatBoot/RagChat/types.ts
+@@ -0,0 +1,69 @@
++/**
++ * 智能问答（RAG）的数据类型，和后端 backend/rag/api.py 里的 Pydantic 模型一一对应。
++ */
++
++export type RetrievalMode = 'hybrid' | 'dense' | 'sparse';
++
++/** 一条参考来源：回答里的 [index] 就指向它 */
++export interface SourceRef {
++    index: number;
++    chunk_id: string;
++    doc_id: string;
++    title: string;
++    section: string;
++    url: string;
++    snippet: string;
++    score: number;
++    cited: boolean; // 回答正文里有没有引用它
++}
++
++/** 后端 /api/assistant/chat 返回的 data */
++export interface AssistantReply {
++    answer: string; // Markdown
++    sources: SourceRef[];
++    follow_ups: string[]; // 可点击的推荐追问
++    query: string; // 实际用于检索的语句（多轮追问会被改写成独立问题）
++    mode: RetrievalMode;
++    latency_ms: number;
++    llm_used: boolean;
++    warning?: string | null;
++}
++
++/** T-One 接口统一的外层格式 */
++export interface ApiEnvelope<T> {
++    code: number;
++    msg: string;
++    data: T;
++}
++
++export interface ChatTurn {
++    role: 'user' | 'assistant';
++    content: string;
++}
++
++export interface ChatRequest {
++    question: string;
++    history?: ChatTurn[];
++    mode?: RetrievalMode;
++    top_k?: number;
++}
++
++/** 界面上的一条消息：用户消息 或 助手消息（有加载中 / 成功 / 失败三种状态） */
++export interface UserMessage {
++    id: string;
++    role: 'user';
++    text: string;
++    time: number;
++}
++
++export interface AssistantMessage {
++    id: string;
++    role: 'assistant';
++    time: number;
++    question: string; // 对应的问题，重试时要用
++    status: 'loading' | 'done' | 'error';
++    reply?: AssistantReply;
++    error?: string;
++}
++
++export type ChatMessage = UserMessage | AssistantMessage;
+diff --git a/src/components/HelperChatBoot/RagChat/useRagChat.ts b/src/components/HelperChatBoot/RagChat/useRagChat.ts
+new file mode 100644
+index 0000000..b7d44aa
+--- /dev/null
++++ b/src/components/HelperChatBoot/RagChat/useRagChat.ts
+@@ -0,0 +1,97 @@
++import { useCallback, useEffect, useRef, useState } from 'react';
++import { askAssistant } from './service';
++import type { AssistantMessage, ChatMessage, ChatTurn, RetrievalMode } from './types';
++
++let seq = 0;
++const uid = () => `${Date.now().toString(36)}-${(seq += 1)}`;
++
++/** 把已经完成的对话整理成 history，只带最近 2 轮，让大模型能理解"它""这个"指的是什么 */
++export function toHistory(messages: ChatMessage[]): ChatTurn[] {
++    const turns: ChatTurn[] = [];
++    messages.forEach((m) => {
++        if (m.role === 'assistant' && m.status === 'done' && m.reply) {
++            turns.push({ role: 'user', content: m.question }, { role: 'assistant', content: m.reply.answer.slice(0, 1000) });
++        }
++    });
++    return turns.slice(-4);
++}
++
++/**
++ * 聊天状态管理：messages 列表 + 三个动作
++ *   ask(问题)     发送问题（推荐追问被点击时也是调用它）
++ *   retry(消息id) 某条回答失败后重试
++ *   clear()       清空对话
++ */
++export function useRagChat(options: { mode?: RetrievalMode; topK?: number } = {}) {
++    const { mode = 'hybrid', topK = 5 } = options;
++    const [messages, setMessages] = useState<ChatMessage[]>([]);
++    const messagesRef = useRef<ChatMessage[]>(messages);
++    messagesRef.current = messages; // 回调里读最新的 messages，避免闭包拿到旧值
++    const abortRef = useRef<AbortController | null>(null);
++
++    useEffect(() => () => abortRef.current?.abort(), []); // 组件卸载时取消还没回来的请求
++
++    const isLoading = (list: ChatMessage[]) =>
++        list.some((m) => m.role === 'assistant' && m.status === 'loading');
++
++    const run = useCallback(
++        async (botId: string, question: string, history: ChatTurn[]) => {
++            const controller = new AbortController();
++            abortRef.current = controller;
++            const patch = (p: Partial<AssistantMessage>) =>
++                setMessages((prev) =>
++                    prev.map((m) => (m.id === botId ? ({ ...m, ...p } as AssistantMessage) : m)),
++                );
++            try {
++                const reply = await askAssistant({ question, history, mode, top_k: topK }, controller.signal);
++                patch({ status: 'done', reply });
++            } catch (e) {
++                const err = e as Error;
++                if (err.name === 'AbortError') return;
++                patch({ status: 'error', error: err.message || '请求失败' });
++            } finally {
++                if (abortRef.current === controller) abortRef.current = null;
++            }
++        },
++        [mode, topK],
++    );
++
++    const ask = useCallback(
++        (text: string) => {
++            const question = text.trim();
++            if (!question || abortRef.current || isLoading(messagesRef.current)) return; // 上一个问题还没回答完，先不发
++            const history = toHistory(messagesRef.current);
++            const botId = uid();
++            const now = Date.now();
++            setMessages((prev) => [
++                ...prev,
++                { id: uid(), role: 'user', text: question, time: now },
++                { id: botId, role: 'assistant', status: 'loading', question, time: now },
++            ]);
++            run(botId, question, history);
++        },
++        [run],
++    );
++
++    const retry = useCallback(
++        (botId: string) => {
++            const list = messagesRef.current;
++            const idx = list.findIndex((m) => m.id === botId);
++            const msg = list[idx];
++            if (!msg || msg.role !== 'assistant' || abortRef.current || isLoading(list)) return;
++            setMessages((prev) =>
++                prev.map((m) => (m.id === botId ? { ...msg, status: 'loading', error: undefined } : m)),
++            );
++            run(botId, msg.question, toHistory(list.slice(0, Math.max(0, idx - 1))));
++        },
++        [run],
++    );
++
++    const clear = useCallback(() => {
++        abortRef.current?.abort();
++        abortRef.current = null;
++        setMessages([]);
++    }, []);
++
++    return { messages, loading: isLoading(messages), ask, retry, clear };
++}
+diff --git a/src/components/HelperChatBoot/index.tsx b/src/components/HelperChatBoot/index.tsx
+index 7a0bc24..88cb0a5 100644
+--- a/src/components/HelperChatBoot/index.tsx
++++ b/src/components/HelperChatBoot/index.tsx
+@@ -1,6 +1,6 @@
+ import React from 'react';
+ import styled from 'styled-components';
+-import HelperContext from './HelperContext';
++import HelperContext, { TAB_AI_QA } from './HelperContext';
+ import bootIcon from '@/assets/boot/boot_icon.svg';
+ import { BootContext } from './Provider';
+ import moment from 'moment';
+@@ -87,7 +87,7 @@ const Helper: React.FC = () => {
+     const [charts, setCharts] = React.useState<any>([]);
+     const [selfHepler, setSelfHelper] = React.useState<any>(undefined);
+     const [inp, setInp] = React.useState('');
+-    const [active, setActive] = React.useState(0);
++    const [active, setActive] = React.useState(TAB_AI_QA); // 默认打开「智能问答」
+     const [feedback, setFeedback] = React.useState(false);
+ 
+     const getTopAnswer = async (query: any = DEFAULT_PARAMS, rowkey?: any) => {

@@ -1,0 +1,13 @@
+# Python 3.10+
+fastapi>=0.110
+uvicorn>=0.29
+pydantic>=2.6
+numpy>=1.26
+jieba>=0.42.1
+sentence-transformers>=2.7   # 会自动装 torch / transformers
+openai>=1.30                 # 只用它的「OpenAI 兼容」客户端：通义千问、DeepSeek、Ollama 都能用
+python-dotenv>=1.0
+
+# 测试
+pytest>=8.0
+httpx>=0.27

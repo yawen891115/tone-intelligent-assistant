@@ -1,0 +1,20 @@
+{
+  "model": "BAAI/bge-small-zh-v1.5",
+  "model_revision": "7999e1d3359715c523056ef9478215996d62a620",
+  "model_sha256": "354763b9b1357bc9c44f62c6be2276321081ed2567773608c0d0785b61d5a026",
+  "python": "3.12.14",
+  "device": "cpu",
+  "versions": {
+    "sentence-transformers": "6.3.0",
+    "transformers": "5.23.0",
+    "torch": "2.15.0+cpu",
+    "numpy": "2.5.5",
+    "jieba": "0.42.1"
+  },
+  "chunk_max_chars": 400,
+  "chunk_overlap": 80,
+  "candidates_per_retriever": 50,
+  "rrf_k": 60,
+  "query_prefix": "",
+  "labels_sha256": "ca57187be7b4cd0a61592cfb2bf268625c5a5461cf8c3ce342500a66abfcd721"
+}

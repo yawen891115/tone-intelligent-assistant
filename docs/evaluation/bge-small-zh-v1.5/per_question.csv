@@ -1,0 +1,67 @@
+﻿qid,type,question,relevant,dense_R@5,sparse_R@5,hybrid_R@5,dense_first_hit,sparse_first_hit,hybrid_first_hit
+q001,keyword,T-One 开源版的前端和后端项目分别叫什么,tone/overview,1.0,1.0,1.0,1,1,1
+q002,semantic,这个测试平台主要能帮我做哪些事情,tone/overview,1.0,1.0,1.0,3,2,5
+q003,keyword,添加机器后生成的 TSN 是什么,tone/machine-access;tone/toneagent,1.0,1.0,1.0,1,1,1
+q004,semantic,我想把实验室自己的服务器拿来跑测试，要怎么接入,tone/machine-access,1.0,1.0,1.0,1,1,1
+q005,keyword,toneagent 的日志用什么命令查看,tone/toneagent,1.0,1.0,1.0,1,2,1
+q006,semantic,平台上的机器一直连不上，显示离线怎么办,tone/toneagent,0.0,1.0,1.0,8,1,2
+q007,keyword,Workspace 里测试人员和普通成员的权限有什么区别,tone/workspace,1.0,1.0,1.0,1,1,1
+q008,semantic,别人建的团队空间我怎么加进去,tone/workspace,1.0,0.0,1.0,1,,3
+q009,keyword,Test Conf 和测试套件是什么关系,tone/test-suite,1.0,1.0,1.0,1,1,1
+q010,semantic,为什么新建测试的时候找不到系统里已有的那套用例,tone/test-suite,1.0,0.0,1.0,2,7,2
+q011,keyword,创建 Job 时按标签调度机器是怎么选的,tone/create-job;tone/machine-tags,1.0,1.0,1.0,1,1,1
+q012,semantic,提交一个测试任务之后它会经历哪些状态,tone/create-job,1.0,1.0,1.0,1,1,1
+q013,keyword,测试计划的 cron 表达式怎么写成每天凌晨执行,tone/job-template,1.0,1.0,1.0,1,1,1
+q014,semantic,想让测试每天晚上自动跑一遍，不用手动点,tone/job-template,1.0,1.0,1.0,5,1,1
+q015,keyword,环境准备里安装内核需要填 kernel devel headers 哪些包,tone/kernel-install,1.0,1.0,1.0,1,1,1
+q016,semantic,测试前想先换成我编译的新内核，平台能自动做吗,tone/kernel-install,1.0,1.0,1.0,1,1,1
+q017,keyword,失败用例可以标注哪些失败原因,tone/test-result,1.0,1.0,1.0,1,1,1
+q018,semantic,测试跑完以后怎么把数据导出成表格,tone/test-result,1.0,1.0,1.0,1,1,1
+q019,keyword,性能基线里的 CV 是什么意思,tone/baseline,1.0,1.0,1.0,1,1,1
+q020,semantic,怎么让平台自动识别以前就知道的失败，不要每次都报出来,tone/baseline;tone/test-result,0.5,1.0,1.0,2,1,1
+q021,keyword,对比分析里的基准组和对比组怎么选,tone/compare-analysis,1.0,1.0,1.0,1,1,1
+q022,semantic,新旧两个内核版本的性能数据想放在一起比较一下,tone/compare-analysis,1.0,1.0,1.0,1,1,1
+q023,keyword,报告模板在哪里维护,tone/report,1.0,1.0,1.0,1,1,1
+q024,semantic,测试做完了想写份总结给领导看，平台上能直接生成吗,tone/report,1.0,0.0,1.0,5,8,5
+q025,keyword,弹性机器池需要配置 AccessKey 吗,tone/cloud-machines,1.0,1.0,1.0,1,1,1
+q026,semantic,没有自己的物理机，能不能临时用云服务器跑测试,tone/cloud-machines,1.0,1.0,1.0,1,5,2
+q027,keyword,机器状态 Occupied 和 Broken 分别表示什么,tone/machine-tags,1.0,1.0,1.0,1,1,1
+q028,semantic,提交的测试一直在排队不开始是怎么回事,tone/machine-tags,0.0,1.0,1.0,7,3,4
+q029,keyword,自助排查需要输入什么,tone/job-troubleshoot,1.0,1.0,1.0,1,1,1
+q030,semantic,测试任务失败了应该从哪里开始查原因,tone/job-troubleshoot,1.0,1.0,1.0,1,3,1
+q031,keyword,离线上传页面需要上传什么格式的文件,tone/offline-upload,1.0,1.0,1.0,1,1,1
+q032,semantic,机器所在的网络连不上平台，测试结果还能放到平台上分析吗,tone/offline-upload;tone-cli/result-format,0.5,0.5,0.5,1,1,1
+q033,keyword,钉钉机器人的 Token 填在哪里,tone/notification,1.0,1.0,1.0,1,1,1
+q034,semantic,测试只有失败的时候才通知我，可以设置吗,tone/notification,1.0,1.0,1.0,1,1,1
+q035,keyword,通过 API 调用平台需要什么访问令牌,tone/permission,1.0,1.0,1.0,1,1,1
+q036,semantic,在 CI 里自动触发测试，需要怎么做身份认证,tone/permission,1.0,1.0,1.0,5,2,2
+q037,keyword,tone-deploy 的 start.sh 脚本怎么执行,deploy/deploy-docker,1.0,1.0,1.0,1,1,1
+q038,semantic,想在公司内网自己搭一套这个测试平台需要准备什么,deploy/deploy-docker,1.0,1.0,1.0,1,1,1
+q039,keyword,部署时端口被占用用 ss -lntp 怎么查,deploy/faq-deploy,1.0,1.0,1.0,1,1,1
+q040,semantic,装好以后打开网页是一片空白怎么回事,deploy/faq-deploy,1.0,1.0,1.0,1,2,1
+q041,keyword,tone fetch 和 tone install 有什么区别,tone-cli/usage,1.0,1.0,1.0,5,3,3
+q042,semantic,命令行工具怎么看支持哪些测试,tone-cli/usage,0.0,1.0,1.0,,1,3
+q043,keyword,install.sh 里的 GIT_URL 是做什么用的,tone-cli/add-suite,1.0,1.0,1.0,1,1,1
+q044,semantic,我想把自己写的测试程序接入命令行工具，要准备哪些脚本,tone-cli/add-suite,1.0,1.0,1.0,1,1,1
+q045,keyword,性能测试结果 throughput: 1234.5 这种格式是什么意思,tone-cli/result-format,1.0,1.0,1.0,1,1,1
+q046,semantic,命令行跑完的结果保存在什么地方,tone-cli/result-format,1.0,0.0,1.0,1,,3
+q047,keyword,Anolis OS 8 和 CentOS 8 兼容吗,anolis/anolis-os-intro,1.0,1.0,1.0,1,1,1
+q048,semantic,龙蜥操作系统支持 ARM 服务器吗,anolis/anolis-os-intro,1.0,1.0,1.0,1,1,1
+q049,keyword,安装 Anolis OS 时怎么分区,anolis/install,1.0,1.0,1.0,1,1,1
+q050,semantic,怎么做一个启动盘把系统装到新电脑上,anolis/install,1.0,1.0,1.0,1,1,1
+q051,keyword,/etc/yum.repos.d 下的 baseurl 怎么改,anolis/yum-repo,1.0,1.0,1.0,1,1,1
+q052,semantic,装软件下载特别慢，能换个更快的源吗,anolis/yum-repo,1.0,1.0,1.0,1,1,1
+q053,keyword,centos2anolis.py 迁移前要做哪些准备,anolis/centos-migration,1.0,1.0,1.0,1,1,1
+q054,semantic,老系统停止维护了，能不能不重装直接换成龙蜥,anolis/centos-migration,1.0,1.0,1.0,1,1,1
+q055,keyword,grubby 怎么设置默认启动的内核,anolis/anck,1.0,1.0,1.0,1,1,1
+q056,semantic,龙蜥默认用的是什么内核，有什么特别的,anolis/anck,1.0,1.0,1.0,1,1,1
+q057,keyword,crashkernel 参数应该怎么设置,anolis/kdump,1.0,1.0,1.0,1,1,1
+q058,semantic,系统突然死机重启了，想知道当时发生了什么,anolis/kdump,0.0,1.0,1.0,8,1,2
+q059,keyword,给龙蜥社区提交 PR 需要签 CLA 吗,community/contribute,1.0,1.0,1.0,1,1,1
+q060,semantic,我想给社区写代码，应该怎么开始,community/contribute,1.0,1.0,1.0,3,1,1
+q061,keyword,提交 Bug 报告要包含哪些信息,community/bug-report,1.0,1.0,1.0,1,1,1
+q062,semantic,发现系统有问题，怎么反馈给开发者,community/bug-report,1.0,1.0,1.0,1,1,1
+q063,keyword,dnf makecache 是干什么的,anolis/yum-repo,1.0,1.0,1.0,1,1,1
+q064,keyword,uname -r 输出的内核和期望不一致导致 Job 失败,tone/kernel-install,1.0,1.0,1.0,1,1,1
+q065,keyword,Failed to download metadata for repo 报错怎么解决,anolis/yum-repo,1.0,1.0,1.0,1,1,1
+q066,keyword,journalctl 看到心跳超时怎么处理,tone/toneagent,1.0,1.0,1.0,1,1,1

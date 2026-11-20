@@ -1,44 +1,28 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# ---- Python ----
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+backend/.env
+# 向量索引：scripts/build_index.py 会重新生成
+backend/data/index/
+# 导出的 T-One 帮助文档（版权归 OpenAnolis 社区，不提交）
+backend/data/tone_docs/
+# evaluate.py 的输出
+backend/results/
+backend/data/eval/candidates.jsonl
 
-# dependencies
-**/node_modules
-# roadhog-api-doc ignore
-/src/utils/request-temp.js
-_roadhog-api-doc
+# ---- Node ----
+node_modules/
+dist/
+# npm run dev/build 时从 tone-front 同步过来的副本
+playground/src/RagChat/
+tone-front/src/.umi/
+tone-front/src/.umi-production/
 
-# production
-/dist
-/.vscode
-/mock
-/build
-
-# misc
+# ---- OS / editor ----
 .DS_Store
-npm-debug.log*
-yarn-error.log
-
-/coverage
-.idea
-yarn.lock
-package-lock.json
-*bak
-.vscode
-
-# visual studio code
-.history
+.idea/
+.vscode/
 *.log
-functions/*
-.temp/**
-
-# umi
-.umi
-.umi-production
-
-# screenshot
-screenshot
-.firebase
-.eslintcache
-
-build
-
-.env
